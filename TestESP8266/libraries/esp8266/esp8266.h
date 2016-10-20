@@ -16,7 +16,7 @@ extern "C" {
 
 #define ESP8266_STATION 1
 #define ESP8266_AP 2
-#define ESP8266_AP_STATION} 3
+#define ESP8266_AP_STATION 3
 
 #define ESP8266_OPEN 0
 #define ESP8266_WPA_PSK 2

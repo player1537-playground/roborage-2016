@@ -1,5 +1,4 @@
 #include <SoftwareSerial.h>
-#include <esp8266.h>
 
 #define ESP8266_RX 2
 #define ESP8266_TX 3

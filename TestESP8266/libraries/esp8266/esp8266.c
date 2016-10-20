@@ -129,11 +129,12 @@ int esp8266_parse_message(struct esp8266 *esp, int start,
                           uint8_t *buffer, int buflen) {
   static const uint8_t prefix[] = {'\r','\n','+','I','P','D'};
   static const uint8_t comma[] = {','};
+  static const uint8_t colon[] = {':'};
   int rv, total_parsed;
 
   total_parsed = 0;
 
-  //  \r \n + I P D , 0 , 1 , A \r \n O K \r \n
+  //  \r \n + I P D , 0 , 1 : A \r \n O K \r \n
   // |-------------|
   rv = esp8266_parse_match(esp, start, prefix, sizeof(prefix));
   start += esp->parsed;
@@ -143,7 +144,7 @@ int esp8266_parse_message(struct esp8266 *esp, int start,
     return rv;
   }
 
-  //  \r \n + I P D , 0 , 1 , A \r \n O K \r \n
+  //  \r \n + I P D , 0 , 1 : A \r \n O K \r \n
   //               |-|
   rv = esp8266_parse_match(esp, start, comma, sizeof(comma));
   start += esp->parsed;
@@ -153,7 +154,7 @@ int esp8266_parse_message(struct esp8266 *esp, int start,
     return rv;
   }
 
-  //  \r \n + I P D , 0 , 1 , A \r \n O K \r \n
+  //  \r \n + I P D , 0 , 1 : A \r \n O K \r \n
   //                 |-|
   rv = esp8266_parse_int(esp, start, channel);
   start += esp->parsed;
@@ -163,7 +164,7 @@ int esp8266_parse_message(struct esp8266 *esp, int start,
     return rv;
   }
 
-  //  \r \n + I P D , 0 , 1 , A \r \n O K \r \n
+  //  \r \n + I P D , 0 , 1 : A \r \n O K \r \n
   //                   |-|
   rv = esp8266_parse_match(esp, start, comma, sizeof(comma));
   start += esp->parsed;
@@ -173,7 +174,7 @@ int esp8266_parse_message(struct esp8266 *esp, int start,
     return rv;
   }
 
-  //  \r \n + I P D , 0 , 1 , A \r \n O K \r \n
+  //  \r \n + I P D , 0 , 1 : A \r \n O K \r \n
   //                     |-|
   rv = esp8266_parse_int(esp, start, msglen);
   start += esp->parsed;
@@ -183,9 +184,9 @@ int esp8266_parse_message(struct esp8266 *esp, int start,
     return rv;
   }
 
-  //  \r \n + I P D , 0 , 1 , A \r \n O K \r \n
+  //  \r \n + I P D , 0 , 1 : A \r \n O K \r \n
   //                       |-|
-  rv = esp8266_parse_match(esp, start, comma, sizeof(comma));
+  rv = esp8266_parse_match(esp, start, colon, sizeof(colon));
   start += esp->parsed;
   total_parsed += esp->parsed;
   esp->parsed = total_parsed;
@@ -193,7 +194,7 @@ int esp8266_parse_message(struct esp8266 *esp, int start,
     return rv;
   }
 
-  //  \r \n + I P D , 0 , 1 , A \r \n O K \r \n
+  //  \r \n + I P D , 0 , 1 : A \r \n O K \r \n
   //                         |-|
   rv = esp8266_parse_verbatim(esp, start, *msglen, buffer, buflen);
   start += esp->parsed;
@@ -203,7 +204,7 @@ int esp8266_parse_message(struct esp8266 *esp, int start,
     return rv;
   }
 
-  //  \r \n + I P D , 0 , 1 , A \r \n O K \r \n
+  //  \r \n + I P D , 0 , 1 : A \r \n O K \r \n
   //                           |---------------|
   rv = esp8266_parse_ok(esp, start);
   start += esp->parsed;
@@ -214,4 +215,30 @@ int esp8266_parse_message(struct esp8266 *esp, int start,
   }
 
   return ESP8266_MATCH;
+}
+
+int esp8266_send_verbatim(struct esp8266 *esp, int start,
+                          const uint8_t *tosend, int len,
+                          int *msglen,
+                          uint8_t *buffer, int buflen) {
+  int i;
+
+  *msglen = 0;
+  for (i=0; i<len; ++i) {
+    buffer[start+i] = tosend[i];
+    *msglen += 1;
+  }
+
+  return 0;
+}
+
+int esp8266_send_attention(struct esp8266 *esp, int start,
+                           int *msglen,
+                           uint8_t *buffer, int buflen) {
+  static const uint8_t tosend[] = {'A','T','\r','\n'};
+
+  return esp8266_send_verbatim(esp, start,
+                               tosend, sizeof(tosend),
+                               msglen,
+                               buffer, buflen);
 }

@@ -40,6 +40,13 @@ int esp8266_parse_ok(struct esp8266 *esp, int start);
 int esp8266_parse_message(struct esp8266 *esp, int start,
                           int *channel, int *msglen,
                           uint8_t *buffer, int buflen);
+int esp8266_send_verbatim(struct esp8266 *esp, int start,
+                          const uint8_t *tosend, int len,
+                          int *msglen,
+                          uint8_t *buffer, int buflen);
+int esp8266_send_attention(struct esp8266 *esp, int start,
+                           int *msglen,
+                           uint8_t *buffer, int buflen);
 
 #ifdef __cplusplus
 }

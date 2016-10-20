@@ -149,6 +149,27 @@ void test_esp8266_parse_ok(struct esp8266 *esp) {
   cmp_ok(rv, "==", strlen(s), "incorrect parse ok should have correct length");
 }
 
+void test_esp8266_parse_message(struct esp8266 *esp) {
+  const char *s, *s2, *message;
+  int rv, msglen, channel;
+  uint8_t buffer[ESP8266_BUFFER_SIZE];
+
+  message = "A";
+  s = "\r\n+IPD,0,1:A\r\nOK\r\n";
+  s2 = "";
+  esp8266_init(esp);
+  _esp8266_read_string(esp, s);
+  _esp8266_read_string(esp, s2);
+  rv = esp8266_parse_message(esp, 0, &channel, &msglen, buffer, sizeof(buffer));
+  cmp_ok(rv, "==", ESP8266_MATCH, "correct parse message should match");
+  rv = esp->parsed;
+  cmp_ok(rv, "==", strlen(s), "correct parse message should have right length");
+  cmp_ok(channel, "==", 0, "correct parse should have correct channel");
+  cmp_ok(msglen, "==", strlen(message), "correct parse should have msglen");
+  is((const char *)buffer, message, "correct parse should have correct message");
+
+}
+
 int main(int argc, char **argv) {
   struct esp8266 esp;
 
@@ -156,5 +177,6 @@ int main(int argc, char **argv) {
   test_esp8266_init(&esp);
   test_esp8266_read(&esp);
   test_esp8266_parse_ok(&esp);
+  test_esp8266_parse_message(&esp);
   done_testing();
 }

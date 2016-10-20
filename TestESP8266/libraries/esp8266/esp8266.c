@@ -319,18 +319,6 @@ int esp8266_send_cipserver(struct esp8266 *esp, int start,
                                buffer, buflen);
 }
 
-int esp8266_send_cipserver(struct esp8266 *esp, int start,
-						   uint8_t mode,
-                           int *msglen,
-                           uint8_t *buffer, int buflen) {
-  uint8_t tosend[] = {'A','T', '+', 'C', 'I', 'P', 'S', 'E', 'R', 'V', 'E', 'R', '=', mode + '0', '\r','\n'};
-
-  return esp8266_send_verbatim(esp, start,
-                               tosend, sizeof(tosend),
-                               msglen,
-                               buffer, buflen);
-}
-
 int esp8266_send_cipsta(struct esp8266 *esp, int start,
                            int *msglen,
                            uint8_t *buffer, int buflen) {

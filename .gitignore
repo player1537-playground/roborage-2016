@@ -4,3 +4,4 @@ build-*
 !*/t/*.*
 *~
 /TestESP8266/driver
+/TestESP8266/js-driver

@@ -14,6 +14,24 @@ extern "C" {
 #define ESP8266_MATCH 0
 #define ESP8266_CONTINUE 1
 
+#define ESP8266_STATION 1
+#define ESP8266_AP 2
+#define ESP8266_AP_STATION} 3
+
+#define ESP8266_OPEN 0
+#define ESP8266_WPA_PSK 2
+#define ESP8266_WPA2_PSK 3
+#define ESP8266_WPA_WPA2_PSK 4
+
+#define ESP8266_SINGLE_CON 0
+#define ESP8266_MULTIPLE_CON 1
+
+#define ESP8266_NORMAL 0
+#define ESP8266_UNVARNISHED 1
+
+#define ESP8266_DELETE_SERVER 0
+#define ESP8266_CREATE_SERVER 1
+
 struct esp8266 {
   uint8_t buffer[ESP8266_BUFFER_SIZE];
   int head;

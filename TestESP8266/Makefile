@@ -11,6 +11,9 @@ driver: driver.c libraries/esp8266/esp8266.c libraries/esp8266/esp8266.h
 js-driver: js-driver.c
 	gcc -pedantic -Wall -Werror -o $@ $(filter %.c,$^)
 
+connect-to-ardunio: connect-to-arduino.c
+	gcc -std=gnu11 -pedantic -Wall -Werror -o $@ $(filter %.c,$^)
+
 .PHONY: test
 test: t/test_esp8266
 	t/test_esp8266

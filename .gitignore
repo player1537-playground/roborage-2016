@@ -5,3 +5,4 @@ build-*
 *~
 /TestESP8266/driver
 /TestESP8266/js-driver
+/TestESP8266/connect-to-ardunio
